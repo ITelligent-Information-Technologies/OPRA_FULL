@@ -1,0 +1,2 @@
+\\Mac\Home\Desktop\LKH2-site\LKHWin-2.0.9\x64\Debug\LKH-2.exe
+\\Mac\Home\Desktop\LKH2-site\LKHWin-2.0.9\x64\Debug\LKH-2.pdb

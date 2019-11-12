@@ -1,0 +1,3 @@
+\\Mac\Home\Desktop\LKH2-site\LKHWin-2.0.9\x64\Release\LKH-2.exe
+C:\Users\keld\Desktop\LKHWin-2.0.9\x64\Release\LKH-2.exe
+D:\vbDll\LKHWin-2.0.9\x64\Release\LKH-2.exe
