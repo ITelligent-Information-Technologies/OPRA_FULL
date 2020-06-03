@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>ITelligent</Authors>
+    <Company>ITelligent</Company>
+    <PackageId>ITelligent.Scheduling</PackageId>
+    <Product>ITelligent.Scheduling</Product>
+  </PropertyGroup>
+
+</Project>
