@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "chroma-js@2.1.0",
+      "destination": "wwwroot/lib/chroma-js/"
+    },
+    {
+      "library": "microsoft-signalr@3.1.23",
+      "destination": "wwwroot/lib/microsoft-signalr/",
+      "files": [
+        "signalr.min.js"
+      ]
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "geolib@3.3.3",
+      "destination": "wwwroot/lib/geolib/",
+      "files": [
+        "lib/index.min.js"
+      ]
+    }
+  ]
+}
