@@ -1,0 +1,72 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+@section head {
+    <link href="~/css/full-slider.css" rel="stylesheet" />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-154600636-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-154600636-1');
+    </script>
+
+    @RenderSection("head", false)
+}
+
+@section navbar_extra {
+    @*@if (!User.Identity.IsAuthenticated)
+    {
+        <ul class="navbar-nav ml-auto order-md-3 m-n1">
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="PrivateArea" asp-action="Index">
+                    <i class='fas fa-lock'></i> ÁREA PRIVADA
+                </a>
+            </li>
+        </ul>
+    }*@
+
+    @RenderSection("navbar_extra", false)
+}
+
+@section scripts {
+    @RenderSection("scripts", false)
+}
+
+@section footer
+{
+    <!-- Footer -->
+    <footer class="footer-bs">
+        <div class="row align-items-center" style="margin: 0;">
+            <div class="col-12 col-sm-12 col-md-4 footer-brand animated fadeInLeft text-center">
+                <!--<img src="images/Energintel_LOGO (green background).jpg" class="img-responsive" alt="logo" style="width: 100%; max-width: 350px;">-->
+                @*OPRA logo*@
+                <img src="~/images/OPRA logo Fnegro.png" style="max-width: 250px;" />
+                <p class="m-0 text-center text-white">Copyright &copy; Comunity 2017</p>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 footer-nav text-center align-self-center">
+                <ul class="list-inline" style="margin: 0px;">
+                    <li class="list-inline-item"><a id="linkAvisoLegal" asp-controller="Home" asp-action="Legal">Aviso legal</a></li>
+                    <li class="list-inline-item"><a id="linkPoliticaPrivacidad" asp-controller="Home" asp-action="Privacy">Política de privacidad</a></li>
+                </ul>
+
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 footer-ns animated fadeInRight text-center">
+                <h4>Contacto</h4>
+                <span class="social-box animated">
+                    <a href="https://twitter.com/proyectoopra" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.linkedin.com/company/proyecto-opra/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/ITelligent-Information-Technologies/opra" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="mailto:opra@itelligent.es"><i class="fa fa-envelope"></i></a>
+                </span>
+            </div>
+        </div>
+    </footer>
+}
+
+
+@RenderBody()
