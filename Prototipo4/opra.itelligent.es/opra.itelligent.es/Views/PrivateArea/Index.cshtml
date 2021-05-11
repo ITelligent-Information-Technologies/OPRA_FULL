@@ -1,0 +1,251 @@
+﻿@{
+    ViewData["Title"] = "Private";
+    Layout = "_footer";
+}
+
+<h2 class="text-center mt-4"><i class="fas fa-lock text-dark"></i> ÁREA PRIVADA</h2>
+<hr style="width: 50%; margin-top: 5px;" />
+
+<div class="row justify-content-around mt-4 mx-5">
+
+    <!--Bloque Scheduling-->
+    <div class="col-4">
+        <div class="card text-center h-100">
+            <img class="card-img-top" src="~/images/bg_dark_netindustrial.jpg" />
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">Planificación de Operaciones</h5>
+                <p>
+                    <small class="card-text">Sistema de inteligencia artificial que permite optimizar la planificación de operaciones en talleres y proyectos</small>
+                </p>
+                <a id="btn-scheduling" href="#" class="btn mt-auto btn-sm btn-primary" aria-disabled="true">Acceder</a>
+            </div>
+        </div>
+    </div>
+    <!--Bloque Logistica-->
+    <div class="col-4">
+        <div class="card text-center h-100">
+            <img class="card-img-top" src="~/images/logistica.jpg" />
+
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">Vehicle routing</h5>
+                <p>
+                    <small class="card-text">Integración de datos de fuentes diversas y modelos de optimización basados en inteligencia artificial que permiten tener en cuenta la situación del tráfico y el contexto del negocio en tiempo real</small>
+                </p>
+                <a id="btn-tsp" href="#" class="btn mt-auto btn-sm btn-primary" aria-disabled="true">Acceder</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popup-wizard"></div>
+<div id="popup-wizard-tsp"></div>
+
+@section scripts{
+<script>
+    $(function () {
+        $('#btn-scheduling').click(() => {
+            $('#multiview-wizard').dxMultiView('option', 'selectedIndex', 0);
+            $('#popup-wizard').dxPopup('show');
+        });
+
+         $('#btn-tsp').click(() => {
+            $('#multiview-wizard-tsp').dxMultiView('option', 'selectedIndex', 0);
+            $('#popup-wizard-tsp').dxPopup('show');
+        });
+
+        var dataSourceProblemas = new DevExpress.data.DataSource({
+            store: {
+                type: "odata",
+                url: "/odata/MaestraProblemas",
+                @*beforeSend: function (request) {
+                        request.headers["Authorization"] = 'Bearer @await ViewContext.HttpContext.GetTokenAsync("access_token")';
+                    },*@
+                version: 4
+            }
+        });
+
+        var dataSourceProblemasTSP = new DevExpress.data.DataSource({
+            store: {
+                type: "odata",
+                url: "/odata/MaestraProblemasTSP",
+                @*beforeSend: function (request) {
+                        request.headers["Authorization"] = 'Bearer @await ViewContext.HttpContext.GetTokenAsync("access_token")';
+                    },*@
+                version: 4
+            }
+        });
+
+        var problemaSeleccionado;
+
+        $('#popup-wizard').dxPopup({
+            title: 'Planificación de operaciones',
+            contentTemplate: function () {
+                return $('<div>', {id: 'multiview-wizard', class: 'h-100 p-3'}).dxMultiView({
+                    selectedIndex: 0,
+                    deferRendering: false,
+                    items: [
+                        {
+                            template: function () {
+                                let problemas = $('<div>', { class: 'row row-cols-4 mt-3' });
+                                dataSourceProblemas.load().done((data) => {
+                                    data.forEach((item) => {
+                                        let problema = $('<div>', { class: 'col' })
+                                            .append($('<div>', { class: 'card' })
+                                                .append($('<div>', { class: 'card-header' })
+                                                    .append($('<h5>', { class: 'mb-0', text: item.StrNombreProblema })))
+                                                .append($('<div>', { class: 'card-body' })
+                                                    .append($('<p>', { text: 'Descripción del problema' }))
+                                                    .append($('<ul>')
+                                                        .append($('<li>', { text: 'Número de trabajos: ' + item.IntNumeroTrabajos }))
+                                                        .append($('<li>', { text: 'Número de máquinas: ' + item.IntNumeroMaquinas }))
+                                                        .append($('<li>', { text: 'Mejor solución posible: ' + item.DblMejorSolucion })))
+                                                    .append($('<div>', { class: 'text-center' })
+                                                        .append($('<button>', { class: 'btn btn-sm btn-primary', text: 'Seleccionar' }).click(() => {
+                                                            $('#form-ejecucion #problema').prop('value', item.IntId);
+                                                            $('#multiview-wizard').dxMultiView('option', 'selectedIndex', 1);
+                                                        }
+                                                        )))));
+                                            problemas.append(problema);
+                                    });
+                                });
+
+                                let content = $('<div>')
+                                    .append($('<h4>', { text: 'Seleccione el tipo problema' }))
+                                    .append(problemas);
+                                return content;
+                            }
+                        },
+                        {
+                            template: function () {
+                                let content = $('<div>', { class: 'row justify-content-around' })
+                                    .append($('<div>', { class: 'col-4' })
+                                        .append($('<h4>', { text: 'Nueva ejecución', class: 'mb-4 text-center' }))
+                                        .append($('<form>', {id: 'form-ejecucion', method: 'GET', action: 'scheduler' })
+                                            .append($('<div>', { class: 'form-group row' })
+                                                .append($('<label>', {text: 'Nombre de ejecución', class: 'col-auto col-form-label'}))
+                                                .append($('<div>', {class:'col'})
+                                                    .append($('<input>', {class: 'form-control', name: 'nombre'}))
+                                                )
+                                            )
+                                            .append($('<input>', { name: 'problema', id: 'problema', type: 'hidden' }))
+                                            .append($('<button>', {text: 'Aceptar', type: 'submit', class: 'btn btn-primary'}))
+                                        )
+                                    )
+                                    .append($('<div>', { class: 'col-4' })
+                                        .append($('<h4>', { text: 'Retomar ejecución anterior', class: 'mb-4 text-center' }))
+                                        .append($('<p>', {text: 'No existen ejecuciones anteriores'})));
+                                return content;
+                            }
+                        }
+                    ]
+                });
+            }
+        });
+
+        function cargarProblemasTSP(primeraCarga){
+            let pageIndex = dataSourceProblemasTSP.pageIndex();
+
+            if(primeraCarga && pageIndex == 0){
+                //No hacer nada, se carga la pagina 0
+            }
+            else if(!dataSourceProblemasTSP.isLastPage()){
+                //Cargamos la siguiente pagina
+                dataSourceProblemasTSP.pageIndex(pageIndex + 1);
+            }
+            else{
+                //Ya se ha cargado la ultima pagina
+                return true;
+            }
+
+            dataSourceProblemasTSP.load().done((data) => {
+                data.forEach((item) => {
+                    let problema = $('<div>', { class: 'col mt-1' })
+                        .append($('<div>', { class: 'card' })
+                            .append($('<div>', { class: 'card-header' })
+                                .append($('<h5>', { class: 'mb-0', text: item.StrNombreProblema })))
+                            .append($('<div>', { class: 'card-body' })
+                                //.append($('<p>', { text: 'Coste solución óptima: ' + item.DblMejorSolucion }))
+                                .append($('<div>', { class: 'text-center' })
+                                    .append($('<a>', { class: 'btn btn-sm btn-primary', text: 'Seleccionar', href: '/vehiclerouting?problema=' + item.IntId })))));
+                        $('#problemas-tsp').append(problema);
+                });
+
+                $('#scrollview-tsp').dxScrollView('update');
+            });
+
+            return false;
+        }
+
+        $('#popup-wizard-tsp').dxPopup({
+            title: 'Vehicle routing',
+            deferRendering: false,
+            //onShowing: function(){
+            //    cargarProblemasTSP(true);
+            //},
+            contentTemplate: function () {
+                return $('<div>', {id: 'multiview-wizard-tsp', class: 'h-100 p-3'}).dxMultiView({
+                    selectedIndex: 0,
+                    deferRendering: false,
+                    items: [
+                        {
+                            template: function () {
+                                //let problemas = $('<div>', { id: 'problemas-tsp', class: 'row row-cols-5 mt-2' });
+
+                                let content = $('<div>')
+                                    .append($('<h4>', { text: 'Seleccione el tipo problema' }))
+                                    .append($('<div>', {class: 'mt-3'}).dxSelectBox({
+                                        dataSource: dataSourceProblemasTSP,
+                                        valueExpr: 'IntId',
+                                        displayExpr: 'StrNombreProblema',
+                                        onValueChanged: function(e) {
+                                            if(e.value){
+                                                window.location = '/vehiclerouting?problema=' + e.value;
+                                            }
+                                        }
+                                    }));
+
+                                //let scrollView = $('<div id="scrollview-tsp">');
+                                //scrollView.append(content);
+                                //scrollView.dxScrollView({
+                                //    height: '100%',
+                                //    width: '100%',
+                                //    //onReachBottom: function(options) {
+                                //    //    let detenerScroll = cargarProblemasTSP(false);
+
+                                //    //    options.component.release(detenerScroll);
+                                //    //}
+                                //});
+
+                                return content;
+                            }
+                        },
+                        {
+                            template: function () {
+                                let content = $('<div>', { class: 'row justify-content-around' })
+                                    .append($('<div>', { class: 'col-4' })
+                                        .append($('<h4>', { text: 'Nueva ejecución', class: 'mb-4 text-center' }))
+                                        .append($('<form>', {id: 'form-ejecucion', method: 'GET', action: 'scheduler' })
+                                            .append($('<div>', { class: 'form-group row' })
+                                                .append($('<label>', {text: 'Nombre de ejecución', class: 'col-auto col-form-label'}))
+                                                .append($('<div>', {class:'col'})
+                                                    .append($('<input>', {class: 'form-control', name: 'nombre'}))
+                                                )
+                                            )
+                                            .append($('<input>', { name: 'problema', id: 'problema', type: 'hidden' }))
+                                            .append($('<button>', {text: 'Aceptar', type: 'submit', class: 'btn btn-primary'}))
+                                        )
+                                    )
+                                    .append($('<div>', { class: 'col-4' })
+                                        .append($('<h4>', { text: 'Retomar ejecución anterior', class: 'mb-4 text-center' }))
+                                        .append($('<p>', {text: 'No existen ejecuciones anteriores'})));
+                                return content;
+                            }
+                        }
+                    ]
+                });
+            }
+        });
+    });
+</script>
+}
+
