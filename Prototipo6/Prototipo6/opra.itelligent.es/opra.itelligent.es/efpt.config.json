@@ -1,0 +1,59 @@
+﻿{
+   "CodeGenerationMode": 0,
+   "ContextClassName": "BdOpraContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "Models",
+   "OutputPath": "Models",
+   "ProjectRootNamespace": "opra.itelligent.es",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[tblEjecucion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblMaestraProblema]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblMaestraProblemaTSP]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblModeloTSP]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblSolucion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblSolucionTSP]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "ec2amaz-a1172mg.bdOpra.dbo",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}
