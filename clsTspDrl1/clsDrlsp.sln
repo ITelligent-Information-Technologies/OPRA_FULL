@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32407.337
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "clsDrlsp", "clsDrlsp.pyproj", "{938D5AD1-5180-4C9D-85FC-F45AC9F05866}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{938D5AD1-5180-4C9D-85FC-F45AC9F05866}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{938D5AD1-5180-4C9D-85FC-F45AC9F05866}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4463C1CF-CDFF-4862-9A14-422DEDFE824D}
+	EndGlobalSection
+EndGlobal
