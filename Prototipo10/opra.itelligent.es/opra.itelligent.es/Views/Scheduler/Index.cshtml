@@ -1,0 +1,392 @@
+﻿@model opra.itelligent.es.Models.RespuestaScheduler;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_footerFluid";
+}
+
+<h2>Planificación de Operaciones</h2>
+
+<h5>Ejecución: @ViewContext.HttpContext.Request.Query["nombre"]</h5>
+
+<div class="row align-items-center mb-4 mt-3">
+    <div class="col-auto">
+        <div class="d-block">Seleccionar vista</div>
+        <div class="btn-group" role="group" aria-label="Basic example" id="view-group">
+            <button id="view-maquina" type="button" class="btn btn-sm btn-secondary" disabled>Máquinas</button>
+            <button id="view-jobs" type="button" class="btn btn-sm btn-outline-secondary">Jobs</button>
+            <button id="view-dias" type="button" class="btn btn-sm btn-outline-secondary">Días</button>
+        </div>
+    </div>
+    <div class="col-auto">
+        <div class="d-block">Filtrar</div>
+        <div class="input-group input-group-sm">
+            <input id="filter" type="text" class="form-control">
+            <div class="input-group-append">
+                <button id="clear" class="btn btn-outline-secondary" type="button"><i class="fas fa-times"></i></button>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-auto">
+        <div class="d-block">Escala</div>
+        <input type="range" class="custom-range" id="range-escala" min="0" max="59" value="40" autocomplete="off">
+    </div>
+    <div class="col-auto">
+        <div class="d-block">Exportar</div>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button id="export-jpeg" type="button" class="btn btn-sm btn-outline-secondary">JPEG</button>
+            <button id="export-png" type="button" class="btn btn-sm btn-outline-secondary">PNG</button>
+            <button id="export-svg" type="button" class="btn btn-sm btn-outline-secondary">SVG</button>
+        </div>
+    </div>
+    <div class="col-auto ml-auto">
+        Makespan: <strong id="makespan">@Model.Makespan</strong>
+    </div>
+    <div class="col-auto ml-2">
+        <button id="btn-optimizar" class="btn btn-sm btn-primary">Optimizar</button>
+        <a href="/ResultadosScheduler" class="btn btn-sm btn-outline-primary ml-2">Comparar resultados</a>
+    </div>
+</div>
+
+<div id="opt-progress" class="mb-3" style="display: none">
+    <h6 class="mb-3" id="title-progress">Optimizando...</h6>
+    <div id="chart" class="w-100"></div>
+    @*<div class="progress mt-2">
+        <div id="progress-opt" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
+        </div>*@
+    <div class="mt-3 w-100 d-flex justify-content-end">
+        <button id="btn-parar-opt" class="btn btn-sm btn-danger">Parar</button>
+    </div>
+</div>
+
+<div id="dp"></div>
+@*<div id="scheduler"></div>*@
+
+@section scripts{
+<script src="~/lib/daypilot/daypilot-all.min.js"></script>
+<script src="~/lib/chroma-js/chroma.min.js"></script>
+<script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+<script type="text/javascript">
+    var resourcesMachine = @Html.Raw(Json.Serialize(Model.ResourcesMachine));
+    var resourcesJob = @Html.Raw(Json.Serialize(Model.ResourcesJob));
+    var eventsMachine = @Html.Raw(Json.Serialize(Model.EventsMachine));
+    var eventsJob = @Html.Raw(Json.Serialize(Model.EventsJob));
+    var ultimoMakespan = @Model.Makespan;
+
+    $(function () {
+        var connection = new signalR.HubConnectionBuilder().withUrl("/schedulerHub").build();
+        var suscription;
+        var lastSchedule = null;
+
+        connection.start().catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        var storeChart = new DevExpress.data.ArrayStore({
+            data: []
+        });
+
+        $('#btn-parar-opt').click(() => {
+            suscription.dispose();
+            $('#btn-parar-opt').prop('disabled', true);
+            $('#title-progress').text('Optimización detenida');
+            if (lastSchedule != null) {
+                loadSchedule(lastSchedule);
+            }
+        });
+
+        $('#btn-optimizar').click(() => {
+            storeChart.clear();
+
+            $('#btn-aceptar-opt').prop('disabled', true);
+            $('#btn-parar-opt').prop('disabled', false);
+
+            $('#opt-progress').slideDown(function (e) {
+                $('#chart').dxChart({
+                    dataSource: storeChart,
+                    size: {
+                        height: 100
+                    },
+                    animation: { enabled: false },
+                    autoHidePointMarkers: false,
+                    commonAxisSettings: {
+                        grid: {
+                            visible: false
+                        },
+                        tick: { visible: false },
+                        minorTick: { visible: false },
+                        label: { visible: false },
+                        visible: false
+                    },
+                    commonSeriesSettings: {
+                        type: 'splinearea',
+                        argumentField: 'progress',
+                        border: {visible: true}
+                    },
+                    commonPaneSettings: {
+                        border: {visible: false}
+                    },
+                    series: [
+                        {valueField: 'makespan', name: 'Makespan', color: '#89ba00'}
+                    ],
+                    valueAxis: {
+                        visualRange: {
+                            startValue: @Model.BestMakespan,
+                            endValue: ultimoMakespan
+                        },
+                        visualRangeUpdateMode: 'keep',
+                        constantLineStyle: {
+                            label: { position: 'outside' }
+                        },
+                        constantLines: [
+                            {
+                                value: @Model.BestMakespan,
+                                dashStyle: 'dash'
+                            },
+                                {
+                                value: ultimoMakespan,
+                                dashStyle: 'dash'
+                            }
+                        ],
+                        label: {
+                            format: 'decimal'
+                        }
+                    },
+                    legend: { visible: false },
+                    argumentAxis: {
+                        type: 'continuous'
+                    },
+                    customizePoint: function (pointInfo) {
+                        return {
+                            visible: pointInfo.data.schedule != null
+                        };
+                    },
+                    onPointClick: function (e) {
+                        if (!e.target.isSelected()) {
+                            e.target.select();
+
+                            loadSchedule(e.target.data.schedule);
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        font: {
+                            color: '#89ba00',
+                            weight: 800,
+                            size: 16
+                        }
+                    }
+                });
+
+                var stream;
+
+                if (lastSchedule != null) {
+                    stream = connection.stream('Optimizar', @Model.IdProblema, lastSchedule);
+                }
+                else {
+                    stream = connection.stream('OptimizarGuid', @Model.IdProblema, '@Model.Guid');
+                }
+
+                suscription = stream.subscribe({
+                    next: (item) => {
+                        storeChart.push([{ type: 'insert', data: item }]);
+                        if (item.schedule) {
+                            lastSchedule = item.schedule;
+                        }
+                    },
+                    complete: () => {
+                        DevExpress.ui.notify('Planificación optimizada', "success", 5000);
+                        $('#btn-aceptar-opt').prop('disabled', false);
+                        $('#btn-parar-opt').prop('disabled', true);
+                        $('#title-progress').text('Optimización finalizada');
+                        if (lastSchedule != null) {
+                            loadSchedule(lastSchedule);
+                        }
+                    },
+                    error: (err) => {
+                        DevExpress.ui.notify('Error ejecutando optimización', "error", 5000);
+                    },
+                });
+            });
+
+        });
+
+        $('#view-maquina').click(function () {
+
+            $('#view-group').find('.btn-secondary').removeClass('btn-secondary').addClass('btn-outline-secondary').prop('disabled', false);
+            $('#view-maquina').removeClass('btn-outline-secondary').addClass('btn-secondary').prop('disabled', true);
+
+            dp.viewType = "Resources";
+            dp.timeHeaders = [{ "groupBy": "Day" }, { "groupBy": "Hour" }];
+            dp.cellDuration = 20;
+            dp.resources = resourcesMachine;
+            dp.events.list = eventsMachine;
+            dp.eventMoveHandling = 'JavaScript';
+            dp.update();
+        });
+        $('#view-jobs').click(function () {
+
+            $('#view-group').find('.btn-secondary').removeClass('btn-secondary').addClass('btn-outline-secondary').prop('disabled', false);
+            $('#view-jobs').removeClass('btn-outline-secondary').addClass('btn-secondary').prop('disabled', true);
+
+            dp.viewType = "Resources";
+            dp.timeHeaders = [{ "groupBy": "Day" }, { "groupBy": "Hour" }];
+            dp.cellDuration = 20;
+            dp.resources = resourcesJob;
+            dp.events.list = eventsJob;
+            dp.eventMoveHandling = 'Disabled';
+            dp.update();
+        });
+        $('#view-dias').click(function () {
+
+            $('#view-group').find('.btn-secondary').removeClass('btn-secondary').addClass('btn-outline-secondary').prop('disabled', false);
+            $('#view-dias').removeClass('btn-outline-secondary').addClass('btn-secondary').prop('disabled', true);
+
+            dp.viewType = "Days";
+            dp.cellDuration = 5;
+            $('#range-escala').val(55);
+            dp.timeHeaders = [{ "groupBy": "Hour" }];
+            dp.update();
+        });
+
+        $("#filter").keyup(function () {
+            var query = $(this).val();
+            dp.events.filter(query);
+        });
+
+        $("#clear").click(function () {
+            $("#filter").val("");
+            dp.events.filter(null);
+            return false;
+        });
+        $("#export-jpeg").click(function (ev) {
+            ev.preventDefault();
+            var area = $("#area").val();
+            dp.exportAs("jpeg", { area: 'full' }).download();
+        });
+        $("#export-png").click(function (ev) {
+            ev.preventDefault();
+            var area = $("#area").val();
+            dp.exportAs("png", { area: 'full' }).download();
+        });
+        $("#export-svg").click(function (ev) {
+            ev.preventDefault();
+            var area = $("#area").val();
+            dp.exportAs("svg", { area: 'full' }).download();
+        });
+
+        $('#range-escala').change(function (event) {
+            let value = parseInt($(this).val());
+            dp.cellDuration = 60 - value;
+            dp.update();
+        });
+
+
+        var scale = chroma.brewer.set3;
+
+        function setBackground(id, element) {
+            let color = scale[id % scale.length];
+            let pattern = Math.floor(id / scale.length);
+
+            if (pattern > 0) {
+                let colorDark = chroma(color).darken(0.5);
+                element.css('background', 'repeating-linear-gradient(' + 45 * pattern + 'deg,' + color + ', ' + color + ' 10px, ' + colorDark + ' 10px, ' + colorDark + ' 20px)');
+            }
+            else {
+                element.css('background', color);
+            }
+
+
+        }
+
+        function loadSchedule(schedule) {
+            debugger;
+            $.post({
+                url: '/api/SchedulerApi/procesar?problema=@Model.IdProblema',
+                contentType: 'application/json',
+                data: JSON.stringify(schedule),
+                success: function (res) {
+                    dp.events.list = res.eventsMachine;
+                    eventsMachine = res.eventsMachine;
+                    ultimoMakespan = res.makespan;
+                    $('#makespan').text(res.makespan);
+                    dp.update();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    DevExpress.ui.notify(jqXHR.responseText, "error", 5000);
+                }
+            });
+        }
+
+        var dp = new DayPilot.Scheduler("dp");
+
+        dp.locale = "es-es";
+        dp.startDate = "@Model.StartDate.ToString("yyyy-MM-dd")";
+        dp.days = @Model.Days;
+        dp.timeHeaders = [{ "groupBy": "Day" }, { "groupBy": "Hour" }];
+        dp.scale = "CellDuration";
+        dp.snapToGrid = false;
+        dp.cellDuration = 20;
+        dp.showNonBusiness = false;
+        dp.businessBeginsHour = 9;
+        dp.businessEndsHour = 17;
+        dp.durationBarVisible = false;
+        dp.useEventBoxes = "Never";
+        dp.eventResizeHandling = 'Disabled';
+        dp.eventMoveHandling = 'JavaScript';
+        dp.moveBy = 'Full';
+        dp.onEventFilter = function (args) {
+
+            // display only events that contain the specified text, case insensitive
+            if (args.e.text().toUpperCase().indexOf(args.filter.toUpperCase()) === -1) {
+                args.visible = false;
+            }
+        };
+        dp.onEventMoving = function(args) {
+            if (args.e.resource() != args.resource) {
+                args.left.enabled = false;
+                args.right.html = "You can't move an event from resource A to B";
+
+                args.allowed = false;
+            }
+        };
+
+        dp.onEventMove = function (args) {
+            var events = dp.rows.find(args.newResource).events.all().sort((a, b) => {
+                let timeA = a.id() == args.e.id() ? args.newStart : a.start();
+                let timeB = b.id() == args.e.id() ? args.newStart : b.start();
+
+                return timeA.getTime() - timeB.getTime();
+            }).map(x => parseInt(x.id()));
+
+            $.post({
+                url: '/api/SchedulerApi/refresh/@Model.Guid?problema=@Model.IdProblema',
+                contentType: 'application/json',
+                data: JSON.stringify({[args.newResource]: events}),
+                success: function (res) {
+                    dp.events.list = res.eventsMachine;
+                    eventsMachine = res.eventsMachine;
+                    $('#makespan').text(res.makespan);
+                    dp.update();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    DevExpress.ui.notify(jqXHR.responseText, "error", 5000);
+                }
+            });
+        };
+
+        dp.onAfterEventRender = function (args) {
+            let element = $(args.div).find('.scheduler_default_event_inner');
+            setBackground(parseInt(args.e.data.id2) - 1, element);
+
+            if (args.e.data.borderColor) {
+                element.css('border-width', '3px');
+            }
+        };
+
+        dp.resources = resourcesMachine;
+        dp.events.list = eventsMachine;
+        dp.init();
+    });
+</script>
+}
