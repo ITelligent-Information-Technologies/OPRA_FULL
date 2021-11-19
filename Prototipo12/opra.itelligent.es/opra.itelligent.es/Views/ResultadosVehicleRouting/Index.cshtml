@@ -1,0 +1,165 @@
+﻿@{
+    Layout = "_footer";
+    ViewData["Title"] = "Resultados";
+}
+
+<h2>Resultados</h2>
+
+Seleccione problema:
+<div id="select-problema"></div>
+
+<div id="datos-problema" class="mt-4">
+    <div id="chart-problema"></div>
+
+    <h5 class="mt-3">Detalle</h5>
+    <div id="grid-soluciones"></div>
+</div>
+
+@section scripts {
+<script src="lib/geolib/lib/index.min.js"></script>
+<script>
+    $(function(){
+        var formatter = new Intl.NumberFormat('es-ES', {maximumFractionDigits: 2});
+        var formatterPercent = new Intl.NumberFormat('es-ES', {style: 'percent', maximumFractionDigits: 2});
+
+        var mejorSolucion = null;
+
+        var dataSourceProblemas = new DevExpress.data.DataSource({
+            store: {
+                type: 'odata',
+                version: 4,
+                url: '/odata/MaestraProblemasTSP',
+                key: 'IntId',
+                deserializeDates: false
+            }
+        });
+
+         var dataSourceSoluciones = new DevExpress.data.DataSource({
+            store: {
+                type: 'odata',
+                version: 4,
+                url: '/odata/SolucionesTSP',
+                key: 'IntId',
+                deserializeDates: false
+            },
+            filter: ['IntIdProblema', '=', -1],
+            expand: ['IntIdModeloNavigation']
+        });
+
+        $('#select-problema').dxSelectBox({
+            dataSource: dataSourceProblemas,
+            valueExpr: 'IntId',
+            displayExpr: 'StrNombreProblema',
+            onValueChanged: function(e){
+                if(e.value){
+                    $.ajax({
+                        type: 'GET',
+                        url: `/odata/MaestraProblemasTSP(${e.value})/CoordenadasOptimas`,
+                        success: function(res){
+                            mejorSolucion = geolib.getPathLength(res.value);
+                            $('#chart-problema').dxChart('beginUpdate');
+                            $('#chart-problema').dxChart('option', 'valueAxis.constantLines', [{
+                                value: mejorSolucion,
+                                color: 'red',
+                                dashStyle: 'dash',
+                                width: 2,
+                                extendAxis: true,
+                                label: { text: `Coste óptimo = ${mejorSolucion}` },
+                            }]);
+
+                            dataSourceSoluciones.filter(['IntIdProblema','=',e.value]);
+                            dataSourceSoluciones.load().done(() => $('#chart-problema').dxChart('endUpdate'));
+                        }
+                    });
+                }
+            }
+        });
+
+        $('#chart-problema').dxChart({
+            dataSource: dataSourceSoluciones,
+            commonSeriesSettings: {
+                type: 'scatter'
+            },
+            series: [
+                {
+                    argumentField: 'DblTiempo',
+                    valueField: 'DblCoste'
+                }
+            ],
+            commonAxisSettings: {
+                label: {
+                    format: '#0.##'
+                }
+            },
+            argumentAxis: {
+                title: 'Tiempo (segundos)'
+            },
+            valueAxis: {
+                title: 'Coste'
+            },
+            legend: {
+                visible: false
+            },
+            tooltip: {
+                enabled: true,
+                contentTemplate: function(info, container){
+                    let tiempo = info.point.data.DblTiempo;
+                    let coste = info.point.data.DblCoste;
+                    let gap = coste / mejorSolucion - 1;
+
+                    let content = $('<div>');
+                    content.append($('<h6>', {text: info.point.data.IntIdModeloNavigation.StrNombre }));
+                    content.append($('<ul>', {class: 'pl-3'})
+                        .append($('<li>', {text: `Tiempo: ${formatter.format(tiempo)} seg`}))
+                        .append($('<li>', {text: `Coste: ${formatter.format(coste)} m`}))
+                        .append($('<li>', {text: `Gap: ${formatterPercent.format(gap)}`}))
+                    )
+
+                    container.append(content);
+                }
+                //customizeTooltip(arg) {
+                //    return {
+                //        text: arg.point.data.IntIdModeloNavigation.StrNombre,
+                //    };
+                //},
+            }
+        });
+
+         $('#grid-soluciones').dxDataGrid({
+            dataSource: dataSourceSoluciones,
+            columns: [
+                {
+                    dataField: 'IntIdModeloNavigation.StrNombre',
+                    caption: 'Modelo'
+                },
+                {
+                    dataField: 'DblCoste',
+                    caption: 'Coste solución',
+                    sortOrder: 'asc',
+                    format: '#,##0.## m'
+                },
+                {
+                    caption: 'Gap',
+                    calculateCellValue: function(rowData){
+                        return rowData.DblCoste / mejorSolucion - 1;
+                    },
+                    format: { 
+                        type: 'percent',
+                        precision: 2
+                    }
+                },
+                {
+                    dataField: 'DblTiempo',
+                    caption: 'Tiempo',
+                    format: '#0.## seg'
+                },
+                {
+                    dataField: 'DtmAlta',
+                    caption: 'Fecha',
+                    dataType: 'datetime'
+                }
+            ]
+        });
+    });
+</script>
+}
