@@ -1,0 +1,121 @@
+﻿@{
+    Layout = "_footer";
+    ViewData["Title"] = "Resultados";
+}
+
+<h2>Resultados</h2>
+
+<div id="grid-resultados"></div>
+
+@section scripts {
+<script>
+    $(function(){
+        var dataSourceProblemas = new DevExpress.data.DataSource({
+            store: {
+                type: 'odata',
+                version: 4,
+                url: '/odata/MaestraProblemas',
+                key: 'IntId',
+                deserializeDates: false
+            },
+            expand: 'TblEjecucion($expand=TblSolucion)'
+        });
+
+        $('#grid-resultados').dxDataGrid({
+            dataSource: dataSourceProblemas,
+            columns: [
+                {
+                    dataField: 'StrNombreProblema',
+                    caption: 'Problema'
+                },
+                {
+                    dataField: 'StrDescripcion',
+                    caption: 'Descripción'
+                }
+            ],
+            onRowExpanded : function(e){
+                $('#chart' + e.key).dxChart('render');
+            },
+            masterDetail: {
+                enabled: true,
+                template: function(container, info) {
+                    var soluciones = info.data.TblEjecucion.flatMap(x => x.TblSolucion.map(y => ({...y, StrEjecucion: x.StrNombre})));
+
+                    var mejorSolucion = info.data.DblMejorSolucion;
+
+                    $('<div>', {id: 'chart' + info.key}).dxChart({
+                        dataSource: soluciones,
+                        commonSeriesSettings: {
+                            type: 'scatter'
+                        },
+                        series: [
+                            {
+                                argumentField: 'DblTiempo',
+                                valueField: 'DblCoste'
+                            }
+                        ],
+                        commonAxisSettings: {
+                            label: {
+                                format: '#0.##'
+                            }
+                        },
+                        argumentAxis: {
+                            title: 'Tiempo (segundos)'
+                        },
+                        valueAxis: {
+                            title: 'Coste',
+                            constantLines: [{
+                                value: mejorSolucion,
+                                color: 'red',
+                                dashStyle: 'dash',
+                                width: 2,
+                                extendAxis: true,
+                                label: { text: 'Coste óptimo' },
+                            }]
+                        },
+                        legend: {
+                            visible: false
+                        },
+                        tooltip: {
+                            enabled: true,
+                            customizeTooltip(arg) {
+                                return {
+                                    text: arg.point.data.StrEjecucion,
+                                };
+                            },
+                        }
+                    }).appendTo(container);
+
+                    $('<h5>', {text: 'Detalle', class: 'mt-4'}).appendTo(container);
+
+                    $('<div>').dxDataGrid({
+                        dataSource: soluciones,
+                        columns: [
+                            {
+                                dataField: 'StrEjecucion',
+                                caption: 'Ejecución'
+                            },
+                            {
+                                dataField: 'DblCoste',
+                                caption: 'Coste solución',
+                                sortOrder: 'asc',
+                                format: '#0.##'
+                            },
+                            {
+                                dataField: 'DblTiempo',
+                                caption: 'Tiempo',
+                                format: '#0.## seg'
+                            },
+                            {
+                                dataField: 'DtmAlta',
+                                caption: 'Fecha',
+                                dataType: 'datetime'
+                            }
+                        ]
+                    }).appendTo(container);
+                }
+            }
+        })
+    });
+</script>
+}
