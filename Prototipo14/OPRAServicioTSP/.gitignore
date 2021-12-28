@@ -1,0 +1,6 @@
+﻿################################################################################
+# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
+################################################################################
+
+/FlaskWebProject1/FlaskWebProject1/obj/Any CPU/Release
+/FlaskWebProject1/FlaskWebProject1/logs

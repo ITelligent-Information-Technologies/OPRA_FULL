@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>D:\Webs\opratsp.itelligent.es</_PublishTargetUrl>
+    <History>True|2022-04-22T10:49:22.4933532Z;True|2022-04-22T12:22:46.4746532+02:00;True|2022-04-20T13:16:09.5762209+02:00;True|2022-04-19T18:04:17.4664088+02:00;True|2022-04-19T18:03:46.9900147+02:00;True|2022-04-19T16:12:37.8551720+02:00;True|2022-04-19T16:11:24.7726579+02:00;</History>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="FlaskWebProject1/static/content/bootstrap.css">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/content/bootstrap.min.css">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/content/site.css">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/fonts/glyphicons-halflings-regular.eot">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/fonts/glyphicons-halflings-regular.svg">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/fonts/glyphicons-halflings-regular.woff">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/bootstrap.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/bootstrap.min.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/jquery-1.10.2.intellisense.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/jquery-1.10.2.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/jquery-1.10.2.min.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/jquery-1.10.2.min.map">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/jquery.validate-vsdoc.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/jquery.validate.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/jquery.validate.min.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/jquery.validate.unobtrusive.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/jquery.validate.unobtrusive.min.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/modernizr-2.6.2.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/respond.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/respond.min.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/web.config">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/static/scripts/_references.js">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/templates/about.html">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/templates/contact.html">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/templates/index.html">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/templates/layout.html">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/views.py">
+      <publishTime>04/22/2022 12:47:47</publishTime>
+    </File>
+    <File Include="FlaskWebProject1/__init__.py">
+      <publishTime>04/22/2022 11:57:59</publishTime>
+    </File>
+    <File Include="modelo/args.json">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="modelo/epoch-99.pt">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="requirements.txt">
+      <publishTime>04/22/2022 12:07:32</publishTime>
+    </File>
+    <File Include="runserver.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/.gitignore">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/attention_model.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/beam_search.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/boolmask.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/functions.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/graph_encoder.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/lexsort.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/load_data.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/predictor.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/problem_tsp.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/state_tsp.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/tensor_functions.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__init__.py">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/attention_model.cpython-38.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/attention_model.cpython-39.pyc">
+      <publishTime>04/19/2022 16:03:50</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/beam_search.cpython-38.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/beam_search.cpython-39.pyc">
+      <publishTime>04/19/2022 16:03:51</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/boolmask.cpython-38.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/boolmask.cpython-39.pyc">
+      <publishTime>04/19/2022 16:03:51</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/functions.cpython-38.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/functions.cpython-39.pyc">
+      <publishTime>04/19/2022 16:03:51</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/graph_encoder.cpython-38.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/graph_encoder.cpython-39.pyc">
+      <publishTime>04/19/2022 16:03:50</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/lexsort.cpython-38.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/lexsort.cpython-39.pyc">
+      <publishTime>04/19/2022 16:03:51</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/load_data.cpython-38.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/load_data.cpython-39.pyc">
+      <publishTime>04/19/2022 16:00:44</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/predictor.cpython-310.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/predictor.cpython-38.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/predictor.cpython-39.pyc">
+      <publishTime>04/19/2022 16:00:44</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/problem_tsp.cpython-38.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/problem_tsp.cpython-39.pyc">
+      <publishTime>04/19/2022 16:03:51</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/state_tsp.cpython-38.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/state_tsp.cpython-39.pyc">
+      <publishTime>04/19/2022 16:03:51</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/tensor_functions.cpython-38.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/tensor_functions.cpython-39.pyc">
+      <publishTime>04/19/2022 16:03:50</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/__init__.cpython-310.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/__init__.cpython-38.pyc">
+      <publishTime>04/19/2022 10:35:42</publishTime>
+    </File>
+    <File Include="utilidades/__pycache__/__init__.cpython-39.pyc">
+      <publishTime>04/19/2022 16:00:44</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>04/22/2022 11:18:10</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
